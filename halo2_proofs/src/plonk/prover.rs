@@ -562,7 +562,7 @@ where
     let gamma: ChallengeGamma<_> = transcript.squeeze_challenge_scalar();
     
     log::info!("Instance {:?}", instance);
-    log::info!("Advice {}", advice.to_string());
+    log::info!("Advice {:?}", advice);
 
     // Commit to permutations.
     let permutations: Vec<permutation::prover::Committed<Scheme::Curve>> = instance
