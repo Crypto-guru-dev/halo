@@ -384,7 +384,7 @@ where
                     config.clone(),
                     meta.constants.clone(),
                 )?;
-                log::debug!("    Circuit synthesis: {:?}", synthesis_start.elapsed());
+                log::info!("    Circuit synthesis: {:?}", synthesis_start.elapsed());
 
                 let batch_invert_start = Instant::now();
                 let mut advice_values = batch_invert_assigned::<Scheme::Scalar>(
@@ -401,7 +401,7 @@ where
                         })
                         .collect(),
                 );
-                log::debug!("    Batch invert: {:?}", batch_invert_start.elapsed());
+                log::info!("    Batch invert: {:?}", batch_invert_start.elapsed());
 
                 let blinding_start = Instant::now();
                 // Add blinding factors to advice columns
@@ -416,7 +416,7 @@ where
                         }
                     }
                 }
-                log::debug!("    Blinding factors: {:?}", blinding_start.elapsed());
+                log::info!("    Blinding factors: {:?}", blinding_start.elapsed());
 
                 let commitment_start = Instant::now();
                 // Compute commitments to advice column polynomials
@@ -444,7 +444,7 @@ where
                 let advice_commitments = advice_commitments;
                 drop(advice_commitments_projective);
 
-                log::debug!("    Advice commitments: {:?}", commitment_start.elapsed());
+                log::info!("    Advice commitments: {:?}", commitment_start.elapsed());
 
                 let transcript_start = Instant::now();
                 for commitment in &advice_commitments {
@@ -456,8 +456,8 @@ where
                     advice.advice_polys[*column_index] = advice_values;
                     advice.advice_blinds[*column_index] = blind;
                 }
-                log::debug!("    Transcript updates: {:?}", transcript_start.elapsed());
-                log::debug!("    Total circuit processing: {:?}", circuit_start.elapsed());
+                log::info!("    Transcript updates: {:?}", transcript_start.elapsed());
+                log::info!("    Total circuit processing: {:?}", circuit_start.elapsed());
             }
 
             for (index, phase) in meta.challenge_phase.iter().enumerate() {
@@ -467,7 +467,7 @@ where
                     assert!(existing.is_none());
                 }
             }
-            log::debug!("  Phase {:?} completed: {:?}", current_phase, phase_sub_start.elapsed());
+            log::info!("  Phase {:?} completed: {:?}", current_phase, phase_sub_start.elapsed());
         }
 
         assert_eq!(challenges.len(), meta.num_challenges);
