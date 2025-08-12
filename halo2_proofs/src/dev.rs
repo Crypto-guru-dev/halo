@@ -751,7 +751,7 @@ impl<F: FromUniformBytes<64> + Ord> MockProver<F> {
     /// Constraints and lookup are checked at `usable_rows`, parallelly.
     #[cfg(feature = "multicore")]
     pub fn verify_par(&self) -> Result<(), Vec<VerifyFailure>> {
-        self.verify_at_rows_par(self.usable_rows.clone(), self.usable_rows.clone())
+        self.verify_at_rows(self.usable_rows.clone(), self.usable_rows.clone())
     }
 
     /// Returns `Ok(())` if this `MockProver` is satisfied, or a list of errors indicating
