@@ -521,6 +521,7 @@ where
             }
         }
     }
+    log::info!(" Start Elapsed: {:?}", start.elapsed());
 
     #[cfg(not(feature = "mv-lookup"))]
     let lookups: Vec<Vec<lookup::prover::Permuted<Scheme::Curve>>> = instance
@@ -560,6 +561,9 @@ where
     // Sample gamma challenge
     let gamma: ChallengeGamma<_> = transcript.squeeze_challenge_scalar();
     
+    log::info!("Instance {:?}", instance);
+    log::info!("Advice {:?}", advice);
+
     // Commit to permutations.
     let permutations: Vec<permutation::prover::Committed<Scheme::Curve>> = instance
         .iter()
