@@ -29,9 +29,6 @@ use super::mv_lookup as lookup;
 #[cfg(feature = "mv-lookup")]
 use maybe_rayon::iter::{IntoParallelIterator, IntoParallelRefIterator};
 
-// Import parallel iterator for general use
-use maybe_rayon::iter::IntoParallelIterator;
-
 use crate::{
     arithmetic::{eval_polynomial, CurveAffine},
     circuit::Value,
@@ -524,6 +521,7 @@ where
             }
         }
     }
+    log::info!(" Start Elapsed: {:?}", start.elapsed());
 
     #[cfg(not(feature = "mv-lookup"))]
     let lookups: Vec<Vec<lookup::prover::Permuted<Scheme::Curve>>> = instance
@@ -563,10 +561,13 @@ where
     // Sample gamma challenge
     let gamma: ChallengeGamma<_> = transcript.squeeze_challenge_scalar();
     
-    // Commit to permutations in parallel.
+    log::info!("Instance {:?}", instance);
+    // log::info!("Advice hash: {:?}", blake3::hash(&bincode::serialize(&advice).unwrap()));
+
+    // Commit to permutations.
     let permutations: Vec<permutation::prover::Committed<Scheme::Curve>> = instance
-        .par_iter()
-        .zip(advice.par_iter())
+        .iter()
+        .zip(advice.iter())
         .map(|(instance, advice)| {
             pk.vk.cs.permutation.commit(
                 params,
@@ -648,8 +649,8 @@ where
     // Phase 7: Shuffle Commitments
     let phase7_start = Instant::now();
     let shuffles: Vec<Vec<shuffle::prover::Committed<Scheme::Curve>>> = instance
-        .par_iter()
-        .zip(advice.par_iter())
+        .iter()
+        .zip(advice.iter())
         .map(|(instance, advice)| -> Result<Vec<_>, _> {
             // Compress expressions for each shuffle
             pk.vk
